@@ -36,11 +36,21 @@ This project simulates a small blue-team lab environment using Wazuh as the cent
 - Log analysis and alert validation
 
 ## Screenshots
-Add screenshots here showing:
 
-1. Wazuh agent overview
-2. Ubuntu Wazuh agent running
-3. Hydra brute-force attack from Kali
-4. Wazuh Threat Hunting detection results
+### Lab Architecture
+![Lab architecture](images/parallel-desktop-lab-architecture.png)
+
+### Wazuh agents overview
+![Wazuh agents overview](images/wazuh-agents.png)
+
+### Wazuh agents installation on Ubuntu victim
+![Wazuh agents installation](images/wazuh-agent-install.png)
+
+### Kali SSH brute-force attack with Hydra
+![Hydra SSH brute force](images/kali-hydra.png)
+
+### Wazuh detection results
+![Wazuh Threat Hunting alerts](images/wazuh-threat-hunting.png)
+
 
 Add initial homelab README
