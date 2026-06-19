@@ -52,6 +52,32 @@ This project simulates a small blue-team lab environment using Wazuh as the cent
 ### Wazuh detection results
 ![Wazuh Threat Hunting alerts](images/wazuh-threat-hunting.png)
 
+## Scenario 1.2: Windows Logon Brute Force (Failed Passwords)
+- Typing multiple fail passwords on windows 11 victim (CHINFUNGCHAFEEE)
+  
+### Attack Flow
+
+- ⁠Configured a standard user account on the Windows 11 victim (CHINFUNGCHAFEEE) for testing.
+- ⁠Performed multiple failed interactive logon attempts using an incorrect password.
+- Windows generated Security log events for each failed logon (Event ID 4625).
+
+### Detection Results
+
+- The Wazuh agent on CHINFUNGCHAFEEE forwarded Windows Security log events to the Wazuh manager.
+- ⁠In Wazuh Threat Hunting, filtering on ⁠ agent.name: CHINFUNGCHAFEEE ⁠ and ⁠ rule.id:60122 ⁠showed multiple alerts with description ⁠"Logon Failure - Unknown user or bad password".
+- This confirms that Wazuh can detect repeated Windows authentication failures and map them to rule ⁠ 60122 ⁠.
+
+#### Skills demonstrated in this scenario
+
+- ⁠Generating and analyzing Windows failed logon events (Event ID 4625).
+- ⁠Using Wazuh Threat Hunting to filter events by agent name and rule ID.
+- ⁠Understanding how Wazuh maps Windows Security log events to correlation rules (e.g. 60122 for bad passwords).
+
+## Screenshots
+
+### Windows logon failures detected by Wazuh
+![Windows logon failures - rule 60122](images/wazuh-windows-60122.png)
+
 ## Scenario 2: Agent Connectivity Troubleshooting (Manager IP Change)
 
 ### Situation
