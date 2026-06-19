@@ -10,7 +10,7 @@ This project simulates a small blue-team lab environment using Wazuh as the cent
 - Ubuntu 24.04 victim (wazuh agent)
 - Kali Linux attacker
 
-## Scenario 1: SSH Brute Force
+## Scenario 1.1: SSH Brute Force on Ubuntu
 - Kali uses Hydra to brute force SSH against Ubuntu.
 - Wazuh agent on Ubuntu sends auth logs to Wazuh server.
 - Wazuh detects repeated SSH failures (rule 5710) and brute-force patterns.
@@ -52,5 +52,35 @@ This project simulates a small blue-team lab environment using Wazuh as the cent
 ### Wazuh detection results
 ![Wazuh Threat Hunting alerts](images/wazuh-threat-hunting.png)
 
+## Scenario 2: Agent Connectivity Troubleshooting (Manager IP Change)
 
-Add initial homelab README
+### Situation
+- Moved the MacBook and lab VMs to a new location and connected to public Wi-Fi.
+- The Wazuh manager VM received a different IP address compared to the original lab setup.
+- Multiple agents (Windows, macOS) showed `disconnected` or `never connected` in the Wazuh Endpoints view.
+
+### Investigation
+- Ran `ip a` or `hostname -I` on the Ubuntu Wazuh manager to identify the new reachable manager IP address.
+- From each endpoint (Windows, Ubuntu, macOS), used `ping <manager_ip>` to verify basic network connectivity.
+- Confirmed that some agents could reach the manager IP at the network level, but were still configured to use the old manager IP in `ossec.conf`.
+- Checked the agent configuration files on each platform:
+  - Windows: `C:\Program Files (x86)\ossec-agent\ossec.conf`
+  - Ubuntu: `/var/ossec/etc/ossec.conf`
+  - macOS: `/Library/Ossec/etc/ossec.conf`
+
+### Fix
+- Updated the `<address>` value under the `<client><server>` section in `ossec.conf` on each affected agent to point to the new manager IP.
+- Restarted the Wazuh agent services:
+  - Windows: `Restart-Service WazuhSvc` in an elevated PowerShell
+  - Linux: `sudo systemctl restart wazuh-agent`
+  - macOS: reloaded the Wazuh agent launch daemon
+- Returned to the Wazuh dashboard and used **Endpoints → Refresh** to confirm that previously disconnected agents changed to `active` status.
+
+### What this shows
+- Understanding of how Wazuh agents rely on the manager address configured in `ossec.conf`.
+- Ability to troubleshoot real-world connectivity issues caused by IP and network changes, instead of only following a clean lab guide.
+- Experience maintaining telemetry pipelines in a SIEM environment by validating network paths, correcting configuration, and verifying that endpoints successfully send data again.
+
+### Skills Demonstrated
+- Troubleshooting Wazuh agent connectivity issues caused by manager IP and network changes.
+- Understanding of agent–manager communication and basic network diagnostics (IP addressing, `ip a`, `ping`).
